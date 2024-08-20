@@ -1,10 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <filesystem>
+
 
 
 #include <wx/wx.h>
@@ -21,21 +18,10 @@
 
 
 
-
-namespace grid
-{
-	class CWorkbookBase;
-}
-
-
-
 namespace ICELL
 {
 	class CWorksheetNtbk;
 	class CWorkbook;
-
-	wxDECLARE_EVENT(ssEVT_WB_PAGECHANGED, wxAuiNotebookEvent);
-	wxDECLARE_EVENT(ssEVT_GRID_SELECTION_BEGUN, wxGridRangeSelectEvent);
 
 
 	class CWorksheet :public grid::CWorksheetBase
@@ -53,28 +39,22 @@ namespace ICELL
 
 		virtual ~CWorksheet();
 
-
-		CWorkbook* GetWorkbook() const {
+		CWorkbook* GetWorkbook() const { 
 			return m_Workbook;
 		}
-
 
 		wxMenu* GetContextMenu() const
 		{
 			return m_ContextMenu;
 		}
 
-
 	protected:
 		void OnRightClick(wxGridEvent& event);
 
-		void OnSelectCell(wxGridEvent& event);
-
-	protected:
-		CWorkbook* m_Workbook = nullptr;
-		wxMenu* m_ContextMenu{nullptr};
 
 	private:
+		CWorkbook* m_Workbook = nullptr;
+		wxMenu* m_ContextMenu{nullptr};
 		wxWindow* m_ParentWnd;
 	};
 
@@ -90,15 +70,9 @@ namespace ICELL
 
 		grid::CWorksheetBase* CreateWorksheet(wxWindow* wnd, const std::wstring& Label, int nrows, int ncols) const;
 
-		auto GetContextMenu() const
-		{
+		auto GetContextMenu() const {
 			return m_ContextMenu;
 		}
-
-
-	protected:
-		void OnPageChanged(wxAuiNotebookEvent& evt);
-		void OnTabRightDown(wxAuiNotebookEvent& evt) override;
 
 	private:
 		CWorkbook* m_Workbook{nullptr};
@@ -125,33 +99,6 @@ namespace ICELL
 			return GetWorksheetNotebook()->AddNewWorksheet(tblname, nrows, ncols);
 		}
 
-		void ChangeCellAlignment(int ID)
-		{
-			grid::CWorkbookBase::ChangeCellAlignment(ID);
-		}
-
-
-	protected:
-
-		void OnUpdateUI(wxUpdateUIEvent& evt);
-		void OnFontChanged(wxCommandEvent& event); //Font size or face
-		void OnFillFontColor(wxAuiToolBarEvent& event);
-		void OnUndoRedoStackChanged(wxCommandEvent& event);
 		
-
-	private:
-		wxComboBox* m_ComboFontFace, *m_ComboFontSize;
-		wxColour m_FillColor, m_FontColor;
-
-		const int ID_FILLCOLOR = wxNewId();
-		const int ID_FONTCOLOR = wxNewId();
-		const int ID_FONTBOLD = wxNewId();
-		const int ID_FONTITALIC = wxNewId();
-		const int ID_FONTSIZE = wxNewId();
-		const int ID_FONTFACE = wxNewId();
-
-		const int ID_PASTE = wxNewId();
-		const int ID_UNDO = wxNewId();
-		const int ID_REDO = wxNewId();
 	};
 }
