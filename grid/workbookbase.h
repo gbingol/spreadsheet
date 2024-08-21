@@ -30,7 +30,10 @@ namespace grid
 			return m_WSNtbk;
 		}
 
-		virtual DLLGRID bool AddNewWorksheet(const std::wstring& tblname = L"", int nrows = 1000, int ncols = 50);
+		virtual DLLGRID bool AddNewWorksheet(
+							const std::wstring& tblname = L"", 
+							int nrows = 1000, 
+							int ncols = 50);
 
 
 		DLLGRID void PushUndoEvent(std::unique_ptr<WorksheetUndoRedoEvent> event);
@@ -82,23 +85,23 @@ namespace grid
 			2) PushUndoEvent
 		*/
 
-		DLLGRID void ChangeCellAlignment(int wxAlignID, bool RefreshBlock = true); 
-		DLLGRID void ChangeCellBGColor(const wxColor& BGColor, bool RefreshBlock = true);
-		DLLGRID void ChangeTextColor(const wxColor& TxtColor, bool RefreshBlock = true);
-		DLLGRID void ChangeFontFace(const wxString& fontFaceName, bool RefreshBlock = true);
-		DLLGRID void ChangeFontSize(int FontPointSize, bool RefreshBlock = true);
+		void ChangeCellAlignment(int wxAlignID, bool RefreshBlock = true); 
+		void ChangeCellBGColor(const wxColor& BGColor, bool RefreshBlock = true);
+		void ChangeTextColor(const wxColor& TxtColor, bool RefreshBlock = true);
+		void ChangeFontFace(const wxString& fontFaceName, bool RefreshBlock = true);
+		void ChangeFontSize(int FontPointSize, bool RefreshBlock = true);
 
 		//if normal makes it bold and vice versa
-		DLLGRID void ToggleFontWeight(bool RefreshBlock = true);
+		void ToggleFontWeight(bool RefreshBlock = true);
 
 		//if normal makes it italic and vice versa
-		DLLGRID void ToggleFontStyle(bool RefreshBlock = true);
+		void ToggleFontStyle(bool RefreshBlock = true);
 
 		//if normal underlines it and vice versa
-		DLLGRID void ToggleFontUnderlined(bool RefreshBlock = true);
+		void ToggleFontUnderlined(bool RefreshBlock = true);
 
-		DLLGRID void ProcessUndoEvent();
-		DLLGRID void ProcessRedoEvent();
+		void ProcessUndoEvent();
+		void ProcessRedoEvent();
 
 	private:
 		//Gets the TL and BR of selection coord (if no selection returns GridCursorRow and TL=BR)
@@ -109,8 +112,7 @@ namespace grid
 		bool m_IsDirty = false;
 
 	private:
-		std::stack<std::unique_ptr<WorksheetUndoRedoEvent>> m_UndoStack;
-		std::stack<std::unique_ptr<WorksheetUndoRedoEvent>> m_RedoStack;
+		std::stack<std::unique_ptr<WorksheetUndoRedoEvent>> m_UndoStack, m_RedoStack;
 	};
 }
 

@@ -21,13 +21,11 @@ namespace grid
 
 		DLLGRID void ShowWorksheet(); //Show the worksheet where events are happening
 
-		CWorksheetBase* GetEventSource() const
-		{
+		auto GetEventSource() const {
 			return m_WSBase;
 		}
 
-		bool CanRedo() const
-		{
+		bool CanRedo() const {
 			return m_CanRedo;
 		}
 
@@ -44,9 +42,7 @@ namespace grid
 		CWorksheetBase* m_WSBase;
 
 		bool m_CanRedo;
-
 	};
-
 
 
 
@@ -111,7 +107,7 @@ namespace grid
 
 		DLLGRID void SetInitialCells(const std::vector<Cell>& Cells);
 
-		DLLGRID void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) {
+		void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) {
 			m_TL = TL;
 			m_BR = BR;
 		}
@@ -223,7 +219,7 @@ namespace grid
 
 		DLLGRID bool operator==(const WorksheetUndoRedoEvent& other) const;
 
-		DLLGRID void SetInfo(int Start, int Length) 
+		void SetInfo(int Start, int Length) 
 		{
 			m_StartPos = Start;
 			m_Length = Length;
@@ -252,7 +248,7 @@ namespace grid
 
 		DLLGRID bool operator==(const WorksheetUndoRedoEvent& other) const;
 
-		DLLGRID void SetInfo(int Start, int Length)
+		void SetInfo(int Start, int Length)
 		{
 			m_StartPos = Start;
 			m_Length = Length;
@@ -280,7 +276,7 @@ namespace grid
 
 		DLLGRID bool operator==(const WorksheetUndoRedoEvent& other) const;
 
-		DLLGRID void SetInfo(int Start, int Length)
+		void SetInfo(int Start, int Length)
 		{
 			m_StartPos = Start;
 			m_Length = Length;
@@ -312,7 +308,7 @@ namespace grid
 
 		DLLGRID bool operator==(const WorksheetUndoRedoEvent& other) const;
 
-		DLLGRID void SetInfo(int Start, int Length) 
+		void SetInfo(int Start, int Length) 
 		{
 			m_StartPos = Start;
 			m_Length = Length;
@@ -361,21 +357,20 @@ namespace grid
 
 		DLLGRID bool operator==(const WorksheetUndoRedoEvent& other) const;
 
-		DLLGRID void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
+		void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
 			m_TL = TL;
 			m_BR = BR;
 		}
 
 		//first:TL, second:BR
-		DLLGRID void SetCoords(const std::pair< wxGridCellCoords, wxGridCellCoords>& Coords) 
+		void SetCoords(const std::pair< wxGridCellCoords, wxGridCellCoords>& Coords) 
 		{
 			m_TL = Coords.first;
 			m_BR = Coords.second;
 		}
 
-
-		DLLGRID void SetPaste(int pastewhat) 
+		void SetPaste(int pastewhat) 
 		{
 			m_PasteWhat = pastewhat;
 		}
@@ -404,7 +399,7 @@ namespace grid
 
 		DLLGRID void SetCells(const std::vector<Cell>& Cells);
 
-		DLLGRID void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
+		void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
 			m_TL = TL;
 			m_BR = BR;
@@ -433,13 +428,13 @@ namespace grid
 
 		DLLGRID bool operator==(const WorksheetUndoRedoEvent& other) const;
 
-		DLLGRID void SetInitCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
+		void SetInitCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
 			m_Init_TL = TL;
 			m_Init_BR = BR;
 		}
 
-		DLLGRID void SetFinalCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
+		void SetFinalCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
 			m_Final_TL = TL;
 			m_Final_BR = BR;
