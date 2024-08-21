@@ -101,7 +101,7 @@ namespace grid
 
 	protected:
 		//AB15 to AB and 15
-		DLLGRID std::pair<wxString, wxString>
+		std::pair<wxString, wxString>
 			ParseGridCoordinates(const wxString& coordinates);
 
 	protected:

@@ -7,6 +7,8 @@
 
 #include "dllimpexp.h"
 
+
+
 namespace grid
 {
 	class Cell;
@@ -19,27 +21,27 @@ namespace grid
 
 		DLLGRID bool operator==(const CellFormat& other) const;
 
-		DLLGRID void SetFont(const wxFont& font) {
+		void SetFont(const wxFont& font) {
 			m_Font = font;
 		}
 
-		DLLGRID wxFont GetFont() const {
+		wxFont GetFont() const {
 			return m_Font;
 		}
 
-		DLLGRID void SetBackgroundColor(const wxColor& color) {
+		void SetBackgroundColor(const wxColor& color) {
 			m_BGColor = color;
 		}
 
-		DLLGRID wxColor GetBackgroundColor() const {
+		wxColor GetBackgroundColor() const {
 			return m_BGColor;
 		}
 
-		DLLGRID void SetTextColor(const wxColor& color) {
+		void SetTextColor(const wxColor& color) {
 			m_TextColor = color;
 		}
 
-		DLLGRID wxColor GetTextColor() const
+		wxColor GetTextColor() const
 		{
 			return m_TextColor;
 		}
@@ -47,11 +49,11 @@ namespace grid
 
 		DLLGRID void SetAlignment(int horiz, int vert);
 
-		DLLGRID int GetHAlign() const {
+		int GetHAlign() const {
 			return m_HorAlign;
 		}
 
-		DLLGRID int GetVAlign() const {
+		int GetVAlign() const {
 			return m_VerAlign;
 		}
 

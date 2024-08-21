@@ -68,15 +68,14 @@ namespace grid
 	//used by worksheet and others (probably they should not directly use it!)
 	struct XMLDataFormat : public wxDataFormat
 	{
-		DLLGRID XMLDataFormat() : wxDataFormat("XMLDataFormat") {}
+		XMLDataFormat() : wxDataFormat("XMLDataFormat") {}
 	};
 
 
 	class XMLDataObject : public wxTextDataObject
 	{
-
 	public:
-		DLLGRID XMLDataObject(const std::string& xmlUTF8 = "") :
+		XMLDataObject(const std::string& xmlUTF8 = "") :
 			wxTextDataObject(xmlUTF8)
 		{
 			SetFormat(XMLDataFormat());

@@ -221,7 +221,7 @@ namespace grid
 		}
 
 	
-		auto ProcessStack = [&](std::stack<std::unique_ptr<WorksheetUndoRedoEvent>>& stk)
+		auto ProcessStack = [&](auto& stk)
 		{
 			std::stack<std::unique_ptr<WorksheetUndoRedoEvent>> temp;
 
