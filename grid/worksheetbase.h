@@ -17,6 +17,10 @@
 
 
 
+//events by selection rectangle
+DLLGRID wxDECLARE_EVENT(EVT_DATA_MOVING, wxMouseEvent);
+DLLGRID wxDECLARE_EVENT(EVT_DATA_MOVED, wxMouseEvent);
+
 
 namespace grid
 {
@@ -286,43 +290,42 @@ namespace grid
 
 
 	protected:
-		DLLGRID void OnKeyDown(wxKeyEvent& event);
+		void OnKeyDown(wxKeyEvent& event);
+		void OnLabelRightClick(wxGridEvent& event);
+		void OnDeleteRows(wxCommandEvent& event);
+		void OnInsertRows(wxCommandEvent& event);
+		void OnDeleteColumns(wxCommandEvent& event);
+		void OnInsertColumns(wxCommandEvent& event);
 
-		DLLGRID void OnLabelRightClick(wxGridEvent& event);
-		DLLGRID void OnDeleteRows(wxCommandEvent& event);
-		DLLGRID void OnInsertRows(wxCommandEvent& event);
-		DLLGRID void OnDeleteColumns(wxCommandEvent& event);
-		DLLGRID void OnInsertColumns(wxCommandEvent& event);
+		void OnColSize(wxGridSizeEvent& event);
+		void OnRowSize(wxGridSizeEvent& event);
 
-		DLLGRID void OnColSize(wxGridSizeEvent& event);
-		DLLGRID void OnRowSize(wxGridSizeEvent& event);
+		void OnCellDataChanged(wxGridEvent& event);
 
-		DLLGRID void OnCellDataChanged(wxGridEvent& event);
+		void OnGridWindowLeftDown(wxMouseEvent& event);
+		void GridEditorOnKeyDown(wxKeyEvent& event);
 
-		DLLGRID void OnGridWindowLeftDown(wxMouseEvent& event);
-		DLLGRID void GridEditorOnKeyDown(wxKeyEvent& event);
+		void OnKillFocus(wxFocusEvent& event);
+		void OnSetFocus(wxFocusEvent& event);
 
-		DLLGRID void OnKillFocus(wxFocusEvent& event);
-		DLLGRID void OnSetFocus(wxFocusEvent& event);
+		void OnRangeSelecting(wxGridRangeSelectEvent& event);
+		void OnRangeSelected(wxGridRangeSelectEvent& event);
+		void OnSelectCell(wxGridEvent& event);
 
-		DLLGRID void OnRangeSelecting(wxGridRangeSelectEvent& event);
-		DLLGRID void OnRangeSelected(wxGridRangeSelectEvent& event);
-		DLLGRID void OnSelectCell(wxGridEvent& event);
-
-		DLLGRID void DrawColLabel(wxDC& dc, int col) override;
-		DLLGRID void DrawColLabels(wxDC& dc, const wxArrayInt& cols) override;
-		DLLGRID void DrawRowLabel(wxDC& dc, int Row) override;
-		DLLGRID void DrawRowLabels(wxDC& dc, const wxArrayInt& Rows) override;
+		void DrawColLabel(wxDC& dc, int col) override;
+		void DrawColLabels(wxDC& dc, const wxArrayInt& cols) override;
+		void DrawRowLabel(wxDC& dc, int Row) override;
+		void DrawRowLabels(wxDC& dc, const wxArrayInt& Rows) override;
 
 	private:
 		//helper func for DrawColLabel and DrawColLabels
-		DLLGRID void DrawFormattedColLabel(wxDC& dc, int col);
+		void DrawFormattedColLabel(wxDC& dc, int col);
 
 		//Helper func for DrawRowLabel and DrawRowLabels
-		DLLGRID void DrawFormattedRowLabel(wxDC& dc, int Row);
+		void DrawFormattedRowLabel(wxDC& dc, int Row);
 
-		DLLGRID bool SelectionContainsColumn(int Col);
-		DLLGRID bool SelectionContainsRow(int Row);
+		bool SelectionContainsColumn(int Col);
+		bool SelectionContainsRow(int Row);
 
 
 	protected:
@@ -366,6 +369,92 @@ namespace grid
 
 		//Current coordinates of GridCell cursor
 		wxGridCellCoords m_CurCoords{ 0, 0 };
+	};
+
+
+
+	/**************************************************************** */
+
+
+	class CSelRect : public wxEvtHandler
+	{
+	protected:
+		virtual DLLGRID ~CSelRect();
+
+	public:
+		DLLGRID CSelRect(CWorksheetBase* ws,
+			const wxPoint& start,
+			const wxPoint& end,
+			const wxPen& pen,
+			const wxBrush& brush);
+
+		void SetCoords(const wxGridCellCoords& tl, const wxGridCellCoords& br)
+		{
+			m_TL = tl;
+			m_BR = br;
+		}
+
+		void SetInitCoords(const wxGridCellCoords& tl, const wxGridCellCoords& br)
+		{
+			m_InitTL = tl;
+			m_InitBR = br;
+		}
+
+		void SetLButtonCoords(int row, int col)
+		{
+			m_LBtnDown.SetRow(row);
+			m_LBtnDown.SetCol(col);
+		}
+
+		DLLGRID wxRect GetInflatedBoundingRect() const;
+
+		DLLGRID auto GetBoundRect() const
+		{
+			return m_BoundRect;
+		}
+
+		void SetStart(const wxPoint& pt)
+		{
+			m_Start = pt;
+			m_BoundRect = wxRect(m_Start, m_End);
+		}
+
+		void SetEnd(const wxPoint& pt)
+		{
+			m_End = pt;
+			m_BoundRect = wxRect(m_Start, m_End);
+		}
+
+		DLLGRID bool CopyMoveBlock(
+			const wxGridCellCoordsArray& from,
+			const wxGridCellCoordsArray& to,
+			bool IsMoving = false);
+
+		DLLGRID void Draw(wxDC* dc);
+
+
+	protected:
+		void OnKeyDown(wxKeyEvent& event);
+		void OnLeftUp(wxMouseEvent& event);
+		void OnLeftDown(wxMouseEvent& event);
+
+		void OnMouseMove(wxMouseEvent& event);
+
+		void OnDataMoving(wxMouseEvent& event);
+		void OnDataMoved(wxMouseEvent& event);
+
+	protected:
+		wxGridCellCoords m_TL, m_BR;
+		wxGridCellCoords m_InitTL, m_InitBR;
+		wxGridCellCoords m_LBtnDown;
+
+	private:
+		CWorksheetBase* m_WS{ nullptr };
+
+		wxRect m_BoundRect;
+		wxPoint m_Start, m_End;
+		wxPen m_Pen;
+		wxBrush m_Brush;
 	};
 
 }
