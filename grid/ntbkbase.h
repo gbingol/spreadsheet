@@ -13,33 +13,33 @@ namespace grid
 	class CWorksheetBase;
 	class CWorkbookBase;
 
-	class CWorksheetNtbkBase : public wxAuiNotebook
+	class DLLGRID CWorksheetNtbkBase : public wxAuiNotebook
 	{
 
 	public:
-		DLLGRID CWorksheetNtbkBase(CWorkbookBase* parent);
-		virtual DLLGRID ~CWorksheetNtbkBase();
+		CWorksheetNtbkBase(CWorkbookBase* parent);
+		virtual ~CWorksheetNtbkBase();
 
-		virtual DLLGRID bool AddNewWorksheet(
+		virtual bool AddNewWorksheet(
 			const std::wstring& Label = L"", 
 			int nrows = 1000, 
 			int ncols = 50);
 		
-		DLLGRID bool ImportAsNewWorksheet(
+		bool ImportAsNewWorksheet(
 			const std::wstring& tblname, 
 			int nrows, 
 			int ncols);
 
-		DLLGRID bool RemoveWorksheet(CWorksheetBase* worksheet);
-		DLLGRID bool RemoveWorksheet(const std::wstring& worksheetname);
+		bool RemoveWorksheet(CWorksheetBase* worksheet);
+		bool RemoveWorksheet(const std::wstring& worksheetname);
 
-		DLLGRID CWorksheetBase* GetWorksheet(const std::wstring& name) const;
+		CWorksheetBase* GetWorksheet(const std::wstring& name) const;
 
 		//finds the position of the worksheet
-		DLLGRID std::optional<size_t> FindWorksheet(const std::wstring& name) const;
+		std::optional<size_t> FindWorksheet(const std::wstring& name) const;
 
 		//GetPage returns wxPanel and this is a helper to find Worksheet in the panel
-		DLLGRID CWorksheetBase* FindWorksheet(const size_t PageNumber) const;
+		CWorksheetBase* FindWorksheet(const size_t PageNumber) const;
 
 		size_t size() const
 		{
@@ -53,18 +53,18 @@ namespace grid
 
 
 	protected:
-		DLLGRID void OnPageClose(wxAuiNotebookEvent& evt);
-		DLLGRID void OnClsButton(wxAuiNotebookEvent& event);
-		DLLGRID void OnEndDrag(wxAuiNotebookEvent& event);
+		void OnPageClose(wxAuiNotebookEvent& evt);
+		void OnClsButton(wxAuiNotebookEvent& event);
+		void OnEndDrag(wxAuiNotebookEvent& event);
 
 	protected:
-		virtual DLLGRID CWorksheetBase* CreateWorksheet(
+		virtual CWorksheetBase* CreateWorksheet(
 			wxWindow* wnd, 
 			const std::wstring& Label, 
 			int nrows, 
 			int ncols) const;
 
-		virtual DLLGRID void OnTabRightDown(wxAuiNotebookEvent& evt);
+		virtual void OnTabRightDown(wxAuiNotebookEvent& evt);
 
 		bool WorksheetExists(const std::wstring& WorksheetName);
 		bool Rename(const std::wstring& NewName);

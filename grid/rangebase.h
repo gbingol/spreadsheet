@@ -12,53 +12,53 @@ namespace grid
 	class CWorksheetBase;
 	class CWorkbookBase;
 
-	class CRangeBase
+	class DLLGRID CRangeBase
 	{
 	public:
 		enum class SELECT { ALLROWS = -1, ALLCOLS = -2 };
 
 	public:
-		DLLGRID CRangeBase() = default;
+		CRangeBase() = default;
 		
-		DLLGRID CRangeBase(
+		CRangeBase(
 			CWorksheetBase* ws, 
 			const wxGridCellCoords& TL, 
 			const wxGridCellCoords& BR);
 		
-		DLLGRID CRangeBase(
+		CRangeBase(
 			const wxString& str, 
 			CWorkbookBase* wb); //there is a selection text
 		
-		DLLGRID CRangeBase(const CRangeBase& rhs);
-		DLLGRID CRangeBase& operator=(const CRangeBase& rhs);
+		CRangeBase(const CRangeBase& rhs);
+		CRangeBase& operator=(const CRangeBase& rhs);
 
-		DLLGRID CRangeBase(CRangeBase&& rhs) noexcept;
-		DLLGRID CRangeBase& operator=(CRangeBase&& rhs) noexcept;
+		CRangeBase(CRangeBase&& rhs) noexcept;
+		CRangeBase& operator=(CRangeBase&& rhs) noexcept;
 
-		virtual DLLGRID ~CRangeBase();
+		virtual ~CRangeBase();
 
 
 		/*
 			Split the range (made up of N cols) into individual column ranges
 			If range contains only a single col, returns the range itself
 		*/
-		DLLGRID std::list<CRangeBase*> split() const;
+		std::list<CRangeBase*> split() const;
 
-		DLLGRID CRangeBase* col(int col) const;
+		CRangeBase* col(int col) const;
 
 
 		/*
 			Topleft coordinate(starting from(0, 0)) must be relative to the range itself
 			and must be within the boundaries of the range
 		*/
-		DLLGRID CRangeBase* GetSubRange(
+		CRangeBase* GetSubRange(
 			const wxGridCellCoords& TopLeft,
 			int NRows = (int)SELECT::ALLROWS,
 			int NCols = (int)SELECT::ALLCOLS) const;
 
 
 		//replace all occurences of Value with new Value
-		DLLGRID void replace(
+		void replace(
 			const wxString& Value,
 			const wxString& newValue);
 
@@ -89,14 +89,14 @@ namespace grid
 		}
 
 		//Coord is relative to the worksheet
-		DLLGRID bool Contains(const wxGridCellCoords& Coord) const;
+		bool Contains(const wxGridCellCoords& Coord) const;
 
-		DLLGRID void set(int row, int col, const wxString& value);
+		void set(int row, int col, const wxString& value);
 
-		DLLGRID wxString get(int row, int col) const;
-		DLLGRID wxString get(int pos) const;
+		wxString get(int row, int col) const;
+		wxString get(int pos) const;
 
-		DLLGRID void clear() const;
+		void clear() const;
 
 
 	protected:
@@ -110,7 +110,4 @@ namespace grid
 		wxGridCellCoords m_TL, m_BR;
 		wxString m_Str;
 	};
-
-
-
 }

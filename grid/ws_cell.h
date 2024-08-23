@@ -13,13 +13,13 @@ namespace grid
 {
 	class Cell;
 
-	class CellFormat
+	class DLLGRID CellFormat
 	{
 	public:
-		DLLGRID CellFormat() = default;
-		DLLGRID CellFormat(Cell* cell);
+		CellFormat() = default;
+		CellFormat(Cell* cell);
 
-		DLLGRID bool operator==(const CellFormat& other) const;
+		bool operator==(const CellFormat& other) const;
 
 		void SetFont(const wxFont& font) {
 			m_Font = font;
@@ -47,7 +47,7 @@ namespace grid
 		}
 
 
-		DLLGRID void SetAlignment(int horiz, int vert);
+		void SetAlignment(int horiz, int vert);
 
 		int GetHAlign() const {
 			return m_HorAlign;
@@ -67,21 +67,21 @@ namespace grid
 
 
 
-	class Cell
+	class DLLGRID Cell
 	{
 
 	public:
-		static DLLGRID Cell FromXMLNode(const wxGrid* const ws, const wxXmlNode* CellNode);
+		static Cell FromXMLNode(const wxGrid* const ws, const wxXmlNode* CellNode);
 
 		//Get topleft and bottom right coordinates
-		static DLLGRID std::pair<wxGridCellCoords, wxGridCellCoords>
+		static std::pair<wxGridCellCoords, wxGridCellCoords>
 			Get_TLBR(const std::vector<Cell>& vecCells);
 
 	public:
-		DLLGRID Cell() = default;
-		DLLGRID Cell(const wxGrid* ws, int row = -1, int col = -1);
+		Cell() = default;
+		Cell(const wxGrid* ws, int row = -1, int col = -1);
 
-		DLLGRID bool operator==(const Cell& other) const;
+		bool operator==(const Cell& other) const;
 
 		const wxGrid* GetWorksheetBase() const
 		{
@@ -121,8 +121,8 @@ namespace grid
 		}
 
 
-		DLLGRID CellFormat GetDefaultFormat() const;
-		DLLGRID std::wstring ToXMLString() const;
+		CellFormat GetDefaultFormat() const;
+		std::wstring ToXMLString() const;
 
 	private:
 		int m_Row{ -1 }, m_Column{ -1 };

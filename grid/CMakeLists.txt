@@ -14,7 +14,7 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_SOURCE_DIR}/wxgrid/libs)
 file(GLOB cppfiles "*.h" "*.cpp")
 
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(${PROJECT_NAME} SHARED ${cppfiles})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GRIDEXPORTS 

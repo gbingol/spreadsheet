@@ -28,7 +28,7 @@ namespace grid
 	class CWorkbookBase;
 	class CSelRect;
 
-	class CWorksheetBase :public wxGrid
+	class DLLGRID CWorksheetBase :public wxGrid
 	{
 	protected:
 
@@ -53,7 +53,7 @@ namespace grid
 		enum class PASTE { ALL = 0, FORMAT, VALUES };
 
 	public:
-		DLLGRID CWorksheetBase(
+		CWorksheetBase(
 			wxWindow* parent,
 			wxWindowID id,
 			const wxPoint& pos,
@@ -62,7 +62,7 @@ namespace grid
 			int nrows = 1,
 			int ncols = 1);
 
-		DLLGRID CWorksheetBase(
+		CWorksheetBase(
 			wxWindow* parent,
 			CWorkbookBase* workbook,
 			wxWindowID id,
@@ -72,7 +72,7 @@ namespace grid
 			int nrows = 1,
 			int ncols = 1);
 
-		virtual DLLGRID ~CWorksheetBase();
+		virtual ~CWorksheetBase();
 
 		//Is not owned by a workbook (implemented for compability)
 		CWorkbookBase* GetWorkbook() const
@@ -80,21 +80,21 @@ namespace grid
 			return m_WBase;
 		}
 
-		DLLGRID bool ReadXMLDoc(wxZipInputStream& InStream, wxZipEntry* Entry);
+		bool ReadXMLDoc(wxZipInputStream& InStream, wxZipEntry* Entry);
 
 		//Read from snapshot directory, WorksheetFullPath is in snapshot directory 
-		DLLGRID bool ReadXMLDoc(const std::filesystem::path& WSPath);
+		bool ReadXMLDoc(const std::filesystem::path& WSPath);
 
 		// Return the TL and BR coordinates where the data is pasted
-		DLLGRID std::pair<wxGridCellCoords, wxGridCellCoords> Paste_XMLDataFormat(PASTE paste = PASTE::ALL);
+		std::pair<wxGridCellCoords, wxGridCellCoords> Paste_XMLDataFormat(PASTE paste = PASTE::ALL);
 
 		//Return the TL and BR coordinates where the data is pasted
-		DLLGRID std::pair<wxGridCellCoords, wxGridCellCoords> Paste_TextValues();
+		std::pair<wxGridCellCoords, wxGridCellCoords> Paste_TextValues();
 
 
-		DLLGRID void Cut();
-		DLLGRID void Delete();
-		DLLGRID void Paste();
+		void Cut();
+		void Delete();
+		void Paste();
 
 
 		//Tells process event to block some of the events (see ProcessGridSelectionEvent)
@@ -108,163 +108,163 @@ namespace grid
 		}
 
 
-		DLLGRID auto GetChangedCells_Format() const {
+		auto GetChangedCells_Format() const {
 			return  m_Format;
 		}
 
-		DLLGRID auto GetChangedCells_Content() const {
+		auto GetChangedCells_Content() const {
 			return m_Content;
 		}
 
-		DLLGRID Cell GetAsCellObject(const wxGridCellCoords& coord) const;
+		Cell GetAsCellObject(const wxGridCellCoords& coord) const;
 
-		DLLGRID Cell GetAsCellObject(int row, int column) const;
+		Cell GetAsCellObject(int row, int column) const;
 
-		DLLGRID void SetCellValue(
+		void SetCellValue(
 			int row,
 			int col,
 			const wxString& value,
 			bool MakeDirty = true);
 
 
-		DLLGRID void SetValue(
+		void SetValue(
 			int row,
 			int col,
 			const wxString& value,
 			bool MakeDirty = true);
 
 
-		DLLGRID void SetCellFont(
+		void SetCellFont(
 			int row,
 			int col,
 			const wxFont& font);
 
 
-		DLLGRID void SetCellAlignment(
+		void SetCellAlignment(
 			int row,
 			int col,
 			int horiz,
 			int vertical);
 
 
-		DLLGRID void SetCellBackgroundColour(
+		void SetCellBackgroundColour(
 			int row,
 			int col,
 			const wxColour& color);
 
 
-		DLLGRID void SetCellTextColour(
+		void SetCellTextColour(
 			int row,
 			int col,
 			const wxColour& color);
 
 
-		DLLGRID void SetRowSize(
+		void SetRowSize(
 			int row,
 			int height);
 
 
-		DLLGRID void SetCleanRowSize(
+		void SetCleanRowSize(
 			int row,
 			int height);
 
 
-		DLLGRID bool DeleteRows(
+		bool DeleteRows(
 			int pos = 0,
 			int numRows = 1,
 			bool updateLabels = true);
 
 
-		DLLGRID bool InsertRows(
+		bool InsertRows(
 			int pos = 0,
 			int numRows = 1,
 			bool updateLabels = true);
 
 
-		DLLGRID bool DeleteCols(
+		bool DeleteCols(
 			int pos = 0,
 			int numCols = 1,
 			bool updateLabels = true);
 
 
-		DLLGRID bool InsertCols(
+		bool InsertCols(
 			int pos = 0,
 			int numCols = 1,
 			bool updateLabels = true);
 
 
-		DLLGRID void MarkDirty();
-		DLLGRID void MarkClean();
+		void MarkDirty();
+		void MarkClean();
 
 
 		//Returns a union of Changed Format and Changed Content
-		DLLGRID GridSet GetChangedCells() const;
+		GridSet GetChangedCells() const;
 
-		DLLGRID wxGridCellCoords GetSelTopLeft() const;
-		DLLGRID wxGridCellCoords GetSelBtmRight() const;
+		wxGridCellCoords GetSelTopLeft() const;
+		wxGridCellCoords GetSelBtmRight() const;
 
-		DLLGRID size_t GetNumSelCols() const;
-		DLLGRID size_t GetNumSelRows() const;
+		size_t GetNumSelCols() const;
+		size_t GetNumSelRows() const;
 
 
-		DLLGRID bool ClearBlockContent(
+		bool ClearBlockContent(
 			const wxGridCellCoords& TL,
 			const wxGridCellCoords& BR);
 
-		DLLGRID bool ClearBlockFormat(
+		bool ClearBlockFormat(
 			const wxGridCellCoords& TL,
 			const wxGridCellCoords& BR);
 
 
-		DLLGRID void SetCellFormattoDefault(
+		void SetCellFormattoDefault(
 			int row,
 			int column);
 
 
-		DLLGRID void SetCelltoDefault(
+		void SetCelltoDefault(
 			int row,
 			int column);
 
 
 		//Marks the worksheet as dirty
-		DLLGRID void ApplyCellFormat(
+		void ApplyCellFormat(
 			int row,
 			int column,
 			const Cell& cell,
 			bool MakeDirty = true);
 
 
-		DLLGRID void SetBlockBackgroundColor(
+		void SetBlockBackgroundColor(
 			const wxGridCellCoords TL,
 			const wxGridCellCoords BR,
 			const wxColour& color);
 
 
-		DLLGRID void SetBlockTextColour(
+		void SetBlockTextColour(
 			const wxGridCellCoords TL,
 			const wxGridCellCoords BR,
 			const wxColour& color);
 
 
-		DLLGRID void SetBlockFont(
+		void SetBlockFont(
 			const wxGridCellCoords TL,
 			const wxGridCellCoords BR,
 			const wxFont& font);
 
 
-		DLLGRID void SetBlockCellAlignment(
+		void SetBlockCellAlignment(
 			const wxGridCellCoords& TL,
 			const wxGridCellCoords& BR,
 			int Alignment);
 
-		DLLGRID void AdjustRowHeight(int row);
+		void AdjustRowHeight(int row);
 
-		DLLGRID std::vector<Cell> GetBlock(
+		std::vector<Cell> GetBlock(
 			const wxGridCellCoords& TL,
 			const wxGridCellCoords& BR) const;
 
 
-		DLLGRID void DrawCellHighlight(wxDC& dc, const wxGridCellAttr* attr);
+		void DrawCellHighlight(wxDC& dc, const wxGridCellAttr* attr);
 
 
 		std::map<int, Row> GetAdjustedRows() const
@@ -278,7 +278,7 @@ namespace grid
 		}
 
 
-		DLLGRID void Copy();
+		void Copy();
 
 		std::wstring GetWSName() const {
 			return m_WSName;
@@ -376,13 +376,13 @@ namespace grid
 	/**************************************************************** */
 
 
-	class CSelRect : public wxEvtHandler
+	class DLLGRID CSelRect : public wxEvtHandler
 	{
 	protected:
-		virtual DLLGRID ~CSelRect();
+		virtual ~CSelRect();
 
 	public:
-		DLLGRID CSelRect(CWorksheetBase* ws,
+		CSelRect(CWorksheetBase* ws,
 			const wxPoint& start,
 			const wxPoint& end,
 			const wxPen& pen,
@@ -406,9 +406,9 @@ namespace grid
 			m_LBtnDown.SetCol(col);
 		}
 
-		DLLGRID wxRect GetInflatedBoundingRect() const;
+		wxRect GetInflatedBoundingRect() const;
 
-		DLLGRID auto GetBoundRect() const
+		auto GetBoundRect() const
 		{
 			return m_BoundRect;
 		}
@@ -425,12 +425,12 @@ namespace grid
 			m_BoundRect = wxRect(m_Start, m_End);
 		}
 
-		DLLGRID bool CopyMoveBlock(
+		bool CopyMoveBlock(
 			const wxGridCellCoordsArray& from,
 			const wxGridCellCoordsArray& to,
 			bool IsMoving = false);
 
-		DLLGRID void Draw(wxDC* dc);
+		void Draw(wxDC* dc);
 
 
 	protected:
