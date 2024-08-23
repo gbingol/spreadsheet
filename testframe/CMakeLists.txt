@@ -16,7 +16,7 @@ _WINDOWS _USRDLL _UNICODE __WXMSW__ wxUSE_NATIVE_DATAVIEWCTRL
 find_package(wxWidgets REQUIRED core base OPTIONAL_COMPONENTS aui net xml)
 
 include(${wxWidgets_USE_FILE})
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/wxgrid)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${wxWidgets_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PRIVATE ${wxWidgets_LIBRARY_DIRS} )
