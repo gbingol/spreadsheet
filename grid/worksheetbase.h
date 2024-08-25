@@ -264,7 +264,7 @@ namespace grid
 			const wxGridCellCoords& BR) const;
 
 
-		void DrawCellHighlight(wxDC& dc, const wxGridCellAttr* attr);
+		void DrawCellHighlight(wxDC& dc, const wxGridCellAttr* attr) override;
 
 
 		std::map<int, Row> GetAdjustedRows() const

@@ -250,7 +250,7 @@ namespace grid
 	std::wstring CellBGColorChangedEvent::GetToolTip(bool IsUndo)
 	{
 		std::wstringstream ToolTip;
-		ToolTip << IsUndo ? "Undo " : "Redo ";
+		ToolTip << (IsUndo ? "Undo " : "Redo ");
 
 		if (m_TL == m_BR)
 			ToolTip << "background color change in cell " << ColNumtoLetters(m_TL.GetCol() + 1) << m_TL.GetRow() + 1;
@@ -308,7 +308,7 @@ namespace grid
 	std::wstring TextColorChangedEvent::GetToolTip(bool IsUndo)
 	{
 		std::wstringstream ToolTip;
-		ToolTip << IsUndo ? "Undo " : "Redo ";
+		ToolTip << (IsUndo ? "Undo " : "Redo ");
 
 		if (m_TL == m_BR)
 			ToolTip << "text color change in cell " << ColNumtoLetters(m_TL.GetCol() + 1) << m_TL.GetRow() + 1;

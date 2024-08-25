@@ -54,8 +54,8 @@ namespace grid
 	public:
 		CellDataChanged(CWorksheetBase* worksheet, int row, int col);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -77,8 +77,8 @@ namespace grid
 	public:
 		CellValueChangedEvent(CWorksheetBase* worksheet, int row, int col);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -99,8 +99,8 @@ namespace grid
 	public:
 		CellContentDeleted(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -127,8 +127,8 @@ namespace grid
 	public:
 		CellBGColorChangedEvent(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -148,8 +148,8 @@ namespace grid
 	public:
 		TextColorChangedEvent(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -169,8 +169,8 @@ namespace grid
 	public:
 		FontChangedEvent(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -192,8 +192,8 @@ namespace grid
 	public:
 		CellAlignmentChangedEvent(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -213,8 +213,8 @@ namespace grid
 	public:
 		RowsDeleted(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -242,8 +242,8 @@ namespace grid
 	public:
 		RowsInserted(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -269,8 +269,8 @@ namespace grid
 	public:
 		ColumnsDeleted(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -301,8 +301,8 @@ namespace grid
 	public:
 		ColumnsInserted(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -329,8 +329,8 @@ namespace grid
 
 		RowColSizeChanged(CWorksheetBase* worksheet, ENTITY entity, int Number);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -350,8 +350,8 @@ namespace grid
 	public:
 		DataPasted(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override; 
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -390,8 +390,8 @@ namespace grid
 	public:
 		DataCut(CWorksheetBase* worksheet);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
@@ -421,8 +421,8 @@ namespace grid
 		//can also be copied during moving (Ctrl button)
 		DataMovedEvent(CWorksheetBase* worksheet, bool Moved = true);
 
-		void Undo();
-		void Redo();
+		void Undo() override;
+		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
