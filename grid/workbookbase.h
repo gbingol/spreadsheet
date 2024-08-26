@@ -14,7 +14,7 @@ namespace grid
 {
 	class CWorksheetNtbkBase;
 	class CWorksheetBase;
-	class WorksheetUndoRedoEvent;
+	class WSUndoRedoEvent;
 
 	class DLLGRID CWorkbookBase : public wxPanel
 	{
@@ -36,7 +36,7 @@ namespace grid
 							int ncols = 50);
 
 
-		void PushUndoEvent(std::unique_ptr<WorksheetUndoRedoEvent> event);
+		void PushUndoEvent(std::unique_ptr<WSUndoRedoEvent> event);
 
 		void EnableEditing(bool Enable = true);
 
@@ -112,7 +112,7 @@ namespace grid
 		bool m_IsDirty = false;
 
 	private:
-		std::stack<std::unique_ptr<WorksheetUndoRedoEvent>> m_UndoStack, m_RedoStack;
+		std::stack<std::unique_ptr<WSUndoRedoEvent>> m_UndoStack, m_RedoStack;
 	};
 }
 

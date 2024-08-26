@@ -61,7 +61,7 @@ namespace grid
 	}
 
 
-	void CWorkbookBase::PushUndoEvent(std::unique_ptr<WorksheetUndoRedoEvent> event)
+	void CWorkbookBase::PushUndoEvent(std::unique_ptr<WSUndoRedoEvent> event)
 	{
 		//Check if current event and event on the top of redo stack are the same
 		if (!m_UndoStack.empty())
@@ -74,7 +74,7 @@ namespace grid
 			m_UndoStack.push(std::move(event));
 
 		//At any undoable event that is pushed onto stack, clear Redo stack
-		std::stack<std::unique_ptr<grid::WorksheetUndoRedoEvent>>().swap(m_RedoStack);
+		std::stack<std::unique_ptr<grid::WSUndoRedoEvent>>().swap(m_RedoStack);
 
 		wxCommandEvent CmdEvt(ssEVT_WB_UNDOREDO, GetId());
 		CmdEvt.SetEventObject(this);

@@ -9,15 +9,8 @@
 namespace grid
 {
 
-	WorksheetUndoRedoEvent::WorksheetUndoRedoEvent(CWorksheetBase* GridBase, bool CanRedo)
-	{
-		m_CanRedo = CanRedo;
-		m_WSBase = GridBase;
-	}
-
-	WorksheetUndoRedoEvent::~WorksheetUndoRedoEvent() = default;
-
-	void WorksheetUndoRedoEvent::ShowWorksheet()
+	
+	void WSUndoRedoEvent::ShowWorksheet()
 	{
 		auto workbook = m_WSBase->GetWorkbook();
 		if (m_WSBase != workbook->GetActiveWS())
@@ -28,13 +21,7 @@ namespace grid
 
 
 	/*************   Cell Data Changed Event ***************************/
-
-	CellDataChanged::CellDataChanged(CWorksheetBase* worksheet, int row, int col) :
-		WorksheetUndoRedoEvent(worksheet, true)
-	{
-		m_row = row;
-		m_col = col;
-	}
+	
 
 
 	void CellDataChanged::Undo()
@@ -80,28 +67,10 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool CellDataChanged::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		return m_WSBase == static_cast<const CellDataChanged&>(other).m_WSBase &&
-			m_row == static_cast<const CellDataChanged&>(other).m_row &&
-			m_col == static_cast<const CellDataChanged&>(other).m_col &&
-			m_LastVal == static_cast<const CellDataChanged&>(other).m_LastVal;
-	}
-
-
-
 
 
 
 	/*************   Cell Value Changed Event ***************************/
-
-	CellValueChangedEvent::CellValueChangedEvent(CWorksheetBase* worksheet, int row, int col) :
-		WorksheetUndoRedoEvent(worksheet, true)
-	{
-		m_row = row;
-		m_col = col;
-	}
-
 
 	void CellValueChangedEvent::Undo()
 	{
@@ -131,37 +100,23 @@ namespace grid
 	std::wstring CellValueChangedEvent::GetToolTip(bool IsUndo)
 	{
 		std::wstringstream ToolTip;
-		wxString ValueToShow;//in case user enters a very long text
+		wxString Val;//in case user enters a very long text
 
 		if (m_LastVal.length() > 40)
-			ValueToShow << "\'" << m_LastVal.substr(0, 39) << "..." << "\'";
+			Val << "\'" << m_LastVal.substr(0, 39) << "..." << "\'";
 		else
-			ValueToShow = m_LastVal;
+			Val = m_LastVal;
 
-		ToolTip << (IsUndo ? "Undo typing " : "Redo typing") << ValueToShow << " in " << ColNumtoLetters(m_col + 1) << m_row + 1;
+		ToolTip << (IsUndo ? "Undo typing " : "Redo typing") << Val << " in " << ColNumtoLetters(m_col + 1) << m_row + 1;
 
 		return ToolTip.str();
 	}
-
-	bool CellValueChangedEvent::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		return m_WSBase == static_cast<const CellValueChangedEvent&>(other).m_WSBase &&
-			m_row == static_cast<const CellValueChangedEvent&>(other).m_row &&
-			m_col == static_cast<const CellValueChangedEvent&>(other).m_col &&
-			m_LastVal == static_cast<const CellValueChangedEvent&>(other).m_LastVal;
-	}
-
-
-
 
 
 
 
 
 	/*************   Cell Content Deleted Event ***************************/
-
-	CellContentDeleted::CellContentDeleted(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void CellContentDeleted::Undo()
 	{
@@ -202,28 +157,10 @@ namespace grid
 	}
 
 
-	bool CellContentDeleted::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		return m_WSBase == static_cast<const CellContentDeleted&>(other).m_WSBase &&
-			m_TL == static_cast<const CellContentDeleted&>(other).m_TL &&
-			m_BR == static_cast<const CellContentDeleted&>(other).m_BR;
-	}
-
-	void CellContentDeleted::SetInitialCells(const std::vector<Cell>& Cells)
-	{
-		m_InitVal = Cells;
-	}
-
-
-
-
 
 
 
 	/*************   Cell BG Color Changed Event ***************************/
-
-	CellBGColorChangedEvent::CellBGColorChangedEvent(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void CellBGColorChangedEvent::Undo()
 	{
@@ -261,25 +198,12 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool CellBGColorChangedEvent::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-
-		return m_WSBase == static_cast<const CellBGColorChangedEvent&>(other).m_WSBase &&
-			m_TL == static_cast<const CellBGColorChangedEvent&>(other).m_TL &&
-			m_BR == static_cast<const CellBGColorChangedEvent&>(other).m_BR &&
-			m_LastVal == static_cast<const CellBGColorChangedEvent&>(other).m_LastVal;
-	}
-
-
 
 
 
 
 
 	/*************   Text Color Changed Event ***************************/
-
-	TextColorChangedEvent::TextColorChangedEvent(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void TextColorChangedEvent::Undo()
 	{
@@ -319,14 +243,6 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool TextColorChangedEvent::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		return m_WSBase == static_cast<const TextColorChangedEvent&>(other).m_WSBase &&
-			m_TL == static_cast<const TextColorChangedEvent&>(other).m_TL &&
-			m_BR == static_cast<const TextColorChangedEvent&>(other).m_BR &&
-			m_LastVal == static_cast<const TextColorChangedEvent&>(other).m_LastVal;
-	}
-
 
 
 
@@ -334,9 +250,6 @@ namespace grid
 
 
 	/*************   Font Changed Event ***************************/
-
-	FontChangedEvent::FontChangedEvent(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void FontChangedEvent::Undo()
 	{
@@ -375,23 +288,12 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool FontChangedEvent::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-
-		return m_WSBase == static_cast<const FontChangedEvent&>(other).m_WSBase &&
-			m_TL == static_cast<const FontChangedEvent&>(other).m_TL &&
-			m_BR == static_cast<const FontChangedEvent&>(other).m_BR &&
-			m_LastVal == static_cast<const FontChangedEvent&>(other).m_LastVal;
-	}
-
 
 
 
 	/*************   Cell Alignment Changed Event ***************************/
 
-	CellAlignmentChangedEvent::CellAlignmentChangedEvent(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
-
+	
 	void CellAlignmentChangedEvent::Undo()
 	{
 		ShowWorksheet();
@@ -415,7 +317,7 @@ namespace grid
 	std::wstring CellAlignmentChangedEvent::GetToolTip(bool IsUndo)
 	{
 		std::wstringstream Tip;
-		Tip << (IsUndo ? "Undo " : "Redo ") + wxString("cell alignment");
+		Tip << (IsUndo ? "Undo " : "Redo ") + std::wstring(L"cell alignment");
 
 		if (m_TL == m_BR)
 			Tip << "in cell " << ColNumtoLetters(m_TL.GetCol() + 1) << m_TL.GetRow() + 1;
@@ -426,21 +328,10 @@ namespace grid
 		return Tip.str();
 	}
 
-	bool CellAlignmentChangedEvent::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		return m_WSBase == static_cast<const CellAlignmentChangedEvent&>(other).m_WSBase &&
-			m_TL == static_cast<const CellAlignmentChangedEvent&>(other).m_TL &&
-			m_BR == static_cast<const CellAlignmentChangedEvent&>(other).m_BR &&
-			m_LastVal == static_cast<const CellAlignmentChangedEvent&>(other).m_LastVal;
-	}
-
 
 
 
 	/*************   Rows Deleted Event ***************************/
-
-	RowsDeleted::RowsDeleted(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void RowsDeleted::Undo()
 	{
@@ -473,25 +364,11 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool RowsDeleted::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-	void RowsDeleted::SetInitialCells(const std::vector<Cell>& InitCells)
-	{
-		m_InitVal = InitCells;
-	}
-
 
 
 
 
 	/*************   Rows Inserted Event ***************************/
-
-	RowsInserted::RowsInserted(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void RowsInserted::Undo()
 	{
@@ -521,28 +398,14 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool RowsInserted::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-
-
-
-
 
 
 
 	/*************   Columns Deleted Event ***************************/
 
-	ColumnsDeleted::ColumnsDeleted(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
-
 	void ColumnsDeleted::Undo()
 	{
 		ShowWorksheet();
-
 		m_WSBase->InsertCols(m_StartPos, m_Length);
 
 		for (const auto& elem : m_InitVal) {
@@ -555,7 +418,6 @@ namespace grid
 	void ColumnsDeleted::Redo()
 	{
 		ShowWorksheet();
-
 		m_WSBase->DeleteCols(m_StartPos, m_Length);
 	}
 
@@ -568,32 +430,13 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool ColumnsDeleted::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-	void ColumnsDeleted::SetInitialCells(const std::vector<Cell>& InitCells)
-	{
-		m_InitVal = InitCells;
-	}
-
-
-
-
-
 
 
 	/*************   Columns Inserted Event ***************************/
 
-	ColumnsInserted::ColumnsInserted(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
-
 	void ColumnsInserted::Undo()
 	{
 		ShowWorksheet();
-
 		m_WSBase->DeleteCols(m_StartPos, m_Length);
 	}
 
@@ -601,7 +444,6 @@ namespace grid
 	void ColumnsInserted::Redo()
 	{
 		ShowWorksheet();
-
 		m_WSBase->InsertCols(m_StartPos, m_Length);
 	}
 
@@ -613,41 +455,26 @@ namespace grid
 	}
 
 
-	bool ColumnsInserted::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-
-
 
 
 
 
 	/*************   Row / Col Size Changed Event ***************************/
 
-	RowColSizeChanged::RowColSizeChanged(CWorksheetBase* worksheet, ENTITY entity, int colrownumber) :
-		WorksheetUndoRedoEvent(worksheet, true)
-	{
-		m_ColRowNumber = colrownumber;
-		m_Entity = entity;
-	}
-
 	void RowColSizeChanged::Undo()
 	{
 		if (m_Entity == ENTITY::ROW)
-			m_WSBase->SetRowSize(m_ColRowNumber, m_PrevSize);
+			m_WSBase->SetRowSize(m_Pos, m_PrevSize);
 		else
-			m_WSBase->SetColSize(m_ColRowNumber, m_PrevSize);
+			m_WSBase->SetColSize(m_Pos, m_PrevSize);
 	}
 
 	void RowColSizeChanged::Redo()
 	{
 		if (m_Entity == ENTITY::ROW)
-			m_WSBase->SetRowSize(m_ColRowNumber, m_FinalSize);
+			m_WSBase->SetRowSize(m_Pos, m_FinalSize);
 		else
-			m_WSBase->SetColSize(m_ColRowNumber, m_FinalSize);
+			m_WSBase->SetColSize(m_Pos, m_FinalSize);
 	}
 
 	std::wstring RowColSizeChanged::GetToolTip(bool IsUndo)
@@ -656,30 +483,18 @@ namespace grid
 		ToolTip << (IsUndo ? L"Undo " : L"Redo ");
 
 		if (m_Entity == ENTITY::ROW)
-			ToolTip << "height change of row " << m_ColRowNumber + 1;
+			ToolTip << "height change of row " << m_Pos + 1;
 		else
-			ToolTip << "width change of column " << ColNumtoLetters(m_ColRowNumber + 1);
+			ToolTip << "width change of column " << ColNumtoLetters(m_Pos + 1);
 
 		return ToolTip.str();
 	}
-
-	bool RowColSizeChanged::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-
-		return m_WSBase == static_cast<const RowColSizeChanged&>(other).m_WSBase &&
-			m_ColRowNumber == static_cast<const RowColSizeChanged&>(other).m_ColRowNumber &&
-			m_FinalSize == static_cast<const RowColSizeChanged&>(other).m_FinalSize;
-	}
-
 
 
 
 
 
 	/*************   Data Pasted Event ***************************/
-
-	DataPasted::DataPasted(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, false) {} //Cannot redo
 
 	void DataPasted::Undo()
 	{
@@ -694,11 +509,6 @@ namespace grid
 
 		else if (m_PasteWhat == (int)CWorksheetBase::PASTE::FORMAT)
 			m_WSBase->ClearBlockFormat(m_TL, m_BR);
-	}
-
-
-	void DataPasted::Redo()
-	{
 	}
 
 
@@ -721,21 +531,11 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool DataPasted::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-
 
 
 
 
 	/*************   Data Cut Event ***************************/
-
-	DataCut::DataCut(CWorksheetBase* worksheet) :
-		WorksheetUndoRedoEvent(worksheet, true) {}
 
 	void DataCut::Undo()
 	{
@@ -774,27 +574,9 @@ namespace grid
 	}
 
 
-	bool DataCut::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-	void DataCut::SetCells(const std::vector<Cell>& Cells)
-	{
-		m_Value = Cells;
-	}
-
-
-
-
 
 	/*************   Data Moved Event ***************************/
-	DataMovedEvent::DataMovedEvent(CWorksheetBase* worksheet, bool Moved) :
-		WorksheetUndoRedoEvent(worksheet, true) {
-		m_Moved = Moved;
-	}
-
+	
 	void DataMovedEvent::Undo()
 	{
 		m_WSBase->ClearBlockContent(m_Final_TL, m_Final_BR);
@@ -854,15 +636,5 @@ namespace grid
 		return ToolTip.str();
 	}
 
-	bool DataMovedEvent::operator==(const WorksheetUndoRedoEvent& other) const
-	{
-		//always return false
-		return false;
-	}
-
-	void DataMovedEvent::SetCells(const std::vector<Cell>& Cells)
-	{
-		m_CellValues = Cells;
-	}
 
 }

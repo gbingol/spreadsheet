@@ -4,21 +4,26 @@
 #include <vector>
 
 #include <wx/wx.h>
-#include <wx/grid.h>
 
 #include "ws_cell.h"
 
 #include "dllimpexp.h"
 
+
+
 namespace grid
 {
 	class CWorksheetBase;
 
-	class DLLGRID WorksheetUndoRedoEvent
+	class DLLGRID WSUndoRedoEvent
 	{
 	public:
-		WorksheetUndoRedoEvent(CWorksheetBase* worksheet, bool CanRedo);
-		virtual ~WorksheetUndoRedoEvent();
+		WSUndoRedoEvent(CWorksheetBase* worksheet, bool CanRedo)
+		{
+			m_CanRedo = CanRedo;
+			m_WSBase = worksheet;
+		}
+		virtual ~WSUndoRedoEvent() = default;
 
 		void ShowWorksheet(); //Show the worksheet where events are happening
 
@@ -35,13 +40,7 @@ namespace grid
 		virtual void Redo() = 0;
 
 	protected:
-		/*
-		Initially say a cell has a value of 0 and then we changed it to 10
-		Undo should restore the cell to the initial value of 0
-		Redo should restore the cell to the last value of 10
-		*/
 		CWorksheetBase* m_WSBase;
-
 		bool m_CanRedo;
 	};
 
@@ -49,64 +48,70 @@ namespace grid
 
 
 	//triggered when data is changed by user by typing
-	class DLLGRID CellDataChanged : public WorksheetUndoRedoEvent
+	class DLLGRID CellDataChanged : public WSUndoRedoEvent
 	{
 	public:
-		CellDataChanged(CWorksheetBase* worksheet, int row, int col);
+		CellDataChanged(CWorksheetBase* worksheet, int row, int col): 
+		WSUndoRedoEvent(worksheet, true)
+		{
+			m_row = row;
+			m_col = col;
+		}
+		
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
-
 		std::wstring m_InitVal; //Before the change
 		std::wstring m_LastVal; //After the change
 
 	private:
-		int m_row;
-		int m_col;
+		int m_row, m_col;
 	};
 
 
 
 	//triggered with SetCellValue
-	class DLLGRID CellValueChangedEvent : public WorksheetUndoRedoEvent
+	class DLLGRID CellValueChangedEvent : public WSUndoRedoEvent
 	{
 	public:
-		CellValueChangedEvent(CWorksheetBase* worksheet, int row, int col);
+		CellValueChangedEvent(CWorksheetBase* worksheet, int row, int col):
+		WSUndoRedoEvent(worksheet, true)
+		{
+			m_row = row;
+			m_col = col;
+		}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		std::wstring m_InitVal; //Before the change
 		std::wstring m_LastVal; //After the change
 
 	private:
-		int m_row;
-		int m_col;
+		int m_row, m_col;
 	};
 
 
 
-	class DLLGRID CellContentDeleted : public WorksheetUndoRedoEvent
+	class DLLGRID CellContentDeleted : public WSUndoRedoEvent
 	{
 	public:
-		CellContentDeleted(CWorksheetBase* worksheet);
+		CellContentDeleted(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
-
-		void SetInitialCells(const std::vector<Cell>& Cells);
+		void SetInitialCells(const std::vector<Cell>& Cells){
+			m_InitVal = Cells;
+		}
 
 		void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) {
 			m_TL = TL;
@@ -115,110 +120,90 @@ namespace grid
 
 	private:
 		std::vector<Cell> m_InitVal; //Before the change
-
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID CellBGColorChangedEvent : public WorksheetUndoRedoEvent
+	struct DLLGRID CellBGColorChangedEvent : WSUndoRedoEvent
 	{
-	public:
-		CellBGColorChangedEvent(CWorksheetBase* worksheet);
+		CellBGColorChangedEvent(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		std::vector<Cell> m_InitVal; //Before the change
 		std::vector<Cell> m_LastVal; //After the change
 
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID TextColorChangedEvent : public WorksheetUndoRedoEvent
+	struct DLLGRID TextColorChangedEvent : WSUndoRedoEvent
 	{
-	public:
-		TextColorChangedEvent(CWorksheetBase* worksheet);
+		TextColorChangedEvent(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		std::vector<Cell> m_InitVal; //Before the change
 		std::vector<Cell> m_LastVal; //After the change
 
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID FontChangedEvent : public WorksheetUndoRedoEvent
+	struct DLLGRID FontChangedEvent : WSUndoRedoEvent
 	{
-	public:
-		FontChangedEvent(CWorksheetBase* worksheet);
+		FontChangedEvent(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
-
-		std::vector<Cell> m_InitVal;
-		std::vector<Cell> m_LastVal;
-
+		std::vector<Cell> m_InitVal, m_LastVal;
 		std::string m_FontProperty; //Info on changed property, such as "Size", "Face", "Bold" ...
-
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID CellAlignmentChangedEvent : public WorksheetUndoRedoEvent
+	struct DLLGRID CellAlignmentChangedEvent : WSUndoRedoEvent
 	{
-	public:
-		CellAlignmentChangedEvent(CWorksheetBase* worksheet);
+		CellAlignmentChangedEvent(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
-
-		std::vector<Cell> m_InitVal;
-		std::vector<Cell> m_LastVal;
-
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
+		std::vector<Cell> m_InitVal, m_LastVal;
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID RowsDeleted : public WorksheetUndoRedoEvent
+	class DLLGRID RowsDeleted : public WSUndoRedoEvent
 	{
 	public:
-		RowsDeleted(CWorksheetBase* worksheet);
+		RowsDeleted(CWorksheetBase* worksheet): 
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		void SetInfo(int Start, int Length) 
 		{
@@ -226,28 +211,27 @@ namespace grid
 			m_Length = Length;
 		}
 
-		void SetInitialCells(const std::vector<Cell>& InitCells);
+		void SetInitialCells(const std::vector<Cell>& InitCells){
+			m_InitVal = InitCells;
+		}
 
 	private:
 		std::vector<Cell> m_InitVal; //Before the change
-
-		int m_StartPos;
-		int m_Length;
+		int m_StartPos, m_Length;
 	};
 
 
 
-	class DLLGRID RowsInserted : public WorksheetUndoRedoEvent
+	class DLLGRID RowsInserted : public WSUndoRedoEvent
 	{
 	public:
-		RowsInserted(CWorksheetBase* worksheet);
+		RowsInserted(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		void SetInfo(int Start, int Length)
 		{
@@ -256,25 +240,23 @@ namespace grid
 		}
 
 	private:
-		int m_StartPos;
-		int m_Length;
+		int m_StartPos, m_Length;
 	};
 
 
 
 
 
-	class DLLGRID ColumnsDeleted : public WorksheetUndoRedoEvent
+	class DLLGRID ColumnsDeleted : public WSUndoRedoEvent
 	{
 	public:
-		ColumnsDeleted(CWorksheetBase* worksheet);
+		ColumnsDeleted(CWorksheetBase* worksheet) :
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		void SetInfo(int Start, int Length)
 		{
@@ -282,31 +264,30 @@ namespace grid
 			m_Length = Length;
 		}
 
-		void SetInitialCells(const std::vector<Cell>& InitCells);
+		void SetInitialCells(const std::vector<Cell>& InitCells){
+			m_InitVal = InitCells;
+		}
 
 	private:
 
 		std::vector<Cell> m_InitVal; //Before the change
-
-		int m_StartPos;
-		int m_Length;
+		int m_StartPos, m_Length;
 	};
 
 
 
 
 
-	class DLLGRID ColumnsInserted : public WorksheetUndoRedoEvent
+	class DLLGRID ColumnsInserted : public WSUndoRedoEvent
 	{
 	public:
-		ColumnsInserted(CWorksheetBase* worksheet);
+		ColumnsInserted(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		void SetInfo(int Start, int Length) 
 		{
@@ -315,47 +296,47 @@ namespace grid
 		}
 
 	private:
-		int m_StartPos;
-		int m_Length;
+		int m_StartPos, m_Length;
 	};
 
 
 
-	class DLLGRID RowColSizeChanged : public WorksheetUndoRedoEvent
+	class DLLGRID RowColSizeChanged : public WSUndoRedoEvent
 	{
-
 	public:
 		enum class ENTITY { ROW = 0, COL };
 
-		RowColSizeChanged(CWorksheetBase* worksheet, ENTITY entity, int Number);
+		RowColSizeChanged(CWorksheetBase* worksheet, ENTITY entity, int Number):
+		WSUndoRedoEvent(worksheet, true)
+		{
+			m_Pos = Number;
+			m_Entity = entity;
+		}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		int m_PrevSize;
 		int m_FinalSize;
 
 	private:
-		int m_ColRowNumber;
+		int m_Pos;
 		ENTITY m_Entity;
 	};
 
 
-	class DLLGRID DataPasted : public WorksheetUndoRedoEvent
+	class DLLGRID DataPasted : public WSUndoRedoEvent
 	{
 	public:
-		DataPasted(CWorksheetBase* worksheet);
+		DataPasted(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, false) {} //Cannot redo
 
 		void Undo() override; 
-		void Redo() override;
+		void Redo() override{}
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
@@ -370,34 +351,31 @@ namespace grid
 			m_BR = Coords.second;
 		}
 
-		void SetPaste(int pastewhat) 
-		{
+		void SetPaste(int pastewhat) {
 			m_PasteWhat = pastewhat;
 		}
 
 	private:
 		int m_PasteWhat;
-
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
-
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID DataCut : public WorksheetUndoRedoEvent
+	class DLLGRID DataCut : public WSUndoRedoEvent
 	{
 	public:
-		DataCut(CWorksheetBase* worksheet);
+		DataCut(CWorksheetBase* worksheet):
+		WSUndoRedoEvent(worksheet, true) {}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
 
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
-
-		void SetCells(const std::vector<Cell>& Cells);
+		void SetCells(const std::vector<Cell>& Cells){
+			m_Value = Cells;
+		}
 
 		void SetCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
@@ -408,25 +386,24 @@ namespace grid
 	private:
 
 		std::vector<Cell>	m_Value;
-
-		wxGridCellCoords m_TL;
-		wxGridCellCoords m_BR;
+		wxGridCellCoords m_TL, m_BR;
 	};
 
 
 
-	class DLLGRID DataMovedEvent : public WorksheetUndoRedoEvent
+	class DLLGRID DataMovedEvent : public WSUndoRedoEvent
 	{
 	public:
 		//can also be copied during moving (Ctrl button)
-		DataMovedEvent(CWorksheetBase* worksheet, bool Moved = true);
+		DataMovedEvent(CWorksheetBase* worksheet, bool Moved = true): WSUndoRedoEvent(worksheet, true) 
+		{
+			m_Moved = Moved;
+		}
 
 		void Undo() override;
 		void Redo() override;
 
 		std::wstring GetToolTip(bool IsUndo) override;
-
-		bool operator==(const WorksheetUndoRedoEvent& other) const;
 
 		void SetInitCoords(const wxGridCellCoords& TL, const wxGridCellCoords& BR) 
 		{
@@ -440,7 +417,9 @@ namespace grid
 			m_Final_BR = BR;
 		}
 
-		void SetCells(const std::vector<Cell>& Cells);
+		void SetCells(const std::vector<Cell>& Cells){
+			m_CellValues = Cells;
+		}
 
 	private:
 
